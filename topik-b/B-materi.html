@@ -154,6 +154,18 @@
                 video 2. Keanekaragaman hayati di Indonesia.
               </figcaption>
             </figure>
+            <p
+              style="
+                text-align: center;
+                background-color: #c2ccff;
+                padding: 4px 0px;
+                border-radius: 20px;
+                margin-bottom: 0px;
+              "
+            >
+              Setelah mengamati video di atas, buatlah pertanyaan beserta
+              jawabannya pada halaman menanya.
+            </p>
           </center>
           <!-- <div class="bg-mengamati">
             <h5>Rangkuman Video</h5>
@@ -280,6 +292,18 @@
               >
             </div>
           </div>
+          <p
+            style="
+              text-align: center;
+              background-color: #c2ccff;
+              padding: 4px 0px;
+              border-radius: 20px;
+              margin: 8px;
+            "
+          >
+            Setelah berhasil mengirimkan jawaban, silahkan lanjutkan pengerjaan
+            pada halaman mencoba.
+          </p>
         </div>
 
         <div id="mariMencoba" style="display: none">
@@ -500,6 +524,18 @@
               </div>
             </center>
           </div>
+          <p
+            style="
+              text-align: center;
+              background-color: #c2ccff;
+              padding: 4px 0px;
+              border-radius: 20px;
+              margin: 8px;
+            "
+          >
+            Setelah berhasil mengelompokkan jenis flora dan fauna dengan benar,
+            silahkan lanjutkan ke halaman menalar.
+          </p>
         </div>
 
         <div id="mariNalar" style="display: none">
@@ -670,6 +706,18 @@
               </button>
             </div>
           </div>
+          <p
+            style="
+              text-align: center;
+              background-color: #c2ccff;
+              padding: 4px 0px;
+              border-radius: 20px;
+              margin: 8px;
+            "
+          >
+            Setelah berhasil menyelesaikan tugas, buatlah kesimpulan atas materi
+            yang telah dipelajari pada halaman mengomunikasikan.
+          </p>
         </div>
 
         <div id="mariKomunikasi" style="display: none">
@@ -717,26 +765,19 @@
               <i class="bx bx-paper-plane"></i> Kirim Jawaban
             </button>
           </div>
+          <p
+            style="
+              text-align: center;
+              background-color: #c2ccff;
+              padding: 4px 0px;
+              border-radius: 20px;
+              margin: 8px;
+            "
+          >
+            Setelah berhasil mengirimkan kesimpulan, silahkan mengerjakan kuis 2
+            sebelum lanjut ke topik C.
+          </p>
         </div>
-        <!-- <section>
-          <div class="footer">
-            <a href="B-pendahuluan.html">
-              <button id="prevPage">Sebelumnya</button>
-            </a>
-            <a href="B-pendahuluan.html">
-              <button id="page1">1</button>
-            </a>
-            <a href="#">
-              <button id="page2" class="active">2</button>
-            </a>
-            <a href="B-kuis.html">
-              <button id="page3">3</button>
-            </a>
-            <a href="B-kuis.html">
-              <button id="nextPage">Selanjutnya</button>
-            </a>
-          </div>
-        </section> -->
       </div>
     </div>
     <script>
@@ -960,48 +1001,66 @@
         // Referensi
         const mengomunikasikan2 = document.getElementById("mengomunikasikan2");
         const btnKirim = document.getElementById("btnKirim");
-      });
 
-      function simpanJawaban() {
-        var jawaban = mengomunikasikan2.value;
+        // Ambil nilai jawaban dari Firebase saat halaman dimuat
+        const userNISN = localStorage.getItem("nisn");
+        const dbRef = ref(
+          db,
+          "UserSiswa/" + userNISN + "/mengomunikasikan/mengomunikasikan-2"
+        );
 
-        if (jawaban.trim() !== "") {
-          const userNISN = localStorage.getItem("nisn");
-          const dbRef = ref(
-            db,
-            "UserSiswa/" + userNISN + "/mengomunikasikan/mengomunikasikan-2"
-          );
-
-          set(dbRef, {
-            jawaban: jawaban,
-            tanggal: new Date().toLocaleDateString(),
-            waktu: new Date().toLocaleTimeString(),
+        get(dbRef)
+          .then((snapshot) => {
+            const data = snapshot.val();
+            if (data && data.jawaban) {
+              mengomunikasikan2.value = data.jawaban;
+            }
           })
-            .then(() => {
-              Swal.fire({
-                icon: "success",
-                title: "Jawaban Terkirim!",
-                text: "Jawaban Anda berhasil disimpan di database.",
-              });
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              Swal.fire({
-                icon: "error",
-                title: "Gagal!",
-                text: "Terjadi kesalahan saat menyimpan jawaban.",
-              });
-            });
-        } else {
-          Swal.fire({
-            icon: "warning",
-            title: "Peringatan!",
-            text: "Isi jawaban terlebih dahulu sebelum mengirim.",
+          .catch((error) => {
+            console.error("Error:", error);
           });
+
+        function simpanJawaban() {
+          var jawaban = mengomunikasikan2.value;
+
+          if (jawaban.trim() !== "") {
+            const dbRef = ref(
+              db,
+              "UserSiswa/" + userNISN + "/mengomunikasikan/mengomunikasikan-2"
+            );
+
+            set(dbRef, {
+              jawaban: jawaban,
+              tanggal: new Date().toLocaleDateString(),
+              waktu: new Date().toLocaleTimeString(),
+            })
+              .then(() => {
+                Swal.fire({
+                  icon: "success",
+                  title: "Jawaban Terkirim!",
+                  text: "Jawaban Anda berhasil disimpan di database.",
+                });
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Gagal!",
+                  text: "Terjadi kesalahan saat menyimpan jawaban.",
+                });
+              });
+          } else {
+            Swal.fire({
+              icon: "warning",
+              title: "Peringatan!",
+              text: "Isi jawaban terlebih dahulu sebelum mengirim.",
+            });
+          }
         }
-      }
-      // Tambahkan event listener untuk tombol kirim
-      btnKirim.addEventListener("click", simpanJawaban);
+
+        // Tambahkan event listener untuk tombol kirim
+        btnKirim.addEventListener("click", simpanJawaban);
+      });
 
       // kode js menanya
       document.addEventListener("DOMContentLoaded", function () {
